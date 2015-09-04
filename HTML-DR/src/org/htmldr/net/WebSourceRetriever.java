@@ -17,8 +17,21 @@ import java.net.URLConnection;
  * @author Fabien LH
  */
 
+/**
+ * Abstract class which implements the static method getSource()
+ * @author Fabien LH
+ * @version 0.1
+ *
+ */
 public abstract class WebSourceRetriever {
 	
+	/**
+	 * Method which download a web page source code with its URL.
+	 * @param urlPath
+	 * 		The URL of the web page to retrieve.
+	 * @return The web page source code as a String
+	 * @throws IOException Raised if an I/O error occurs when using the InputStream
+	 */
 	public static String getSource(String urlPath) throws IOException {
 		final int bufferLength = 32;
 		
