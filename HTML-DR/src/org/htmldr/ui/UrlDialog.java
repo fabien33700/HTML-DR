@@ -16,24 +16,31 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.htmldr.net.WebSourceRetriever;
+import org.htmldr.parser.HypertextLinkParser;
+
+import javax.swing.JList;
+import javax.swing.AbstractListModel;
 
 public class UrlDialog extends JFrame {
-	private JTextField textField;
+	private JTextField txtHttplocalhost;
 	public UrlDialog() {
 		setTitle("Set a URL ...");
-		setSize(580, 326);
+		setSize(650, 470);
 		
+		JList<String> list = new JList<String>();
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.NORTH);
 		
 		JLabel lblNewLabel = new JLabel("Type a URL :");
 		panel.add(lblNewLabel);
 		
-		textField = new JTextField();
-		panel.add(textField);
-		textField.setColumns(30);
+		txtHttplocalhost = new JTextField();
+		txtHttplocalhost.setText("http://www.google.fr");
+		panel.add(txtHttplocalhost);
+		txtHttplocalhost.setColumns(30);
 			
 		JTextArea textArea = new JTextArea();
 		textArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
@@ -45,8 +52,10 @@ public class UrlDialog extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					String url = txtHttplocalhost.getText();
+					WebSourceRetriever retriever = new WebSourceRetriever(url);
 					textArea.setText(
-							WebSourceRetriever.getSource(textField.getText())
+							retriever.getSourceAsString()
 					);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -55,6 +64,31 @@ public class UrlDialog extends JFrame {
 			}
 		});
 		panel.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Try parse");
+		panel.add(btnNewButton_1);
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String url = txtHttplocalhost.getText();
+				
+				list.setModel(new AbstractListModel<String>() {
+					ArrayList<String> values = new HypertextLinkParser(url).getListLinks();
+					public int getSize() {
+						return values.size();
+					}
+					public String getElementAt(int index) {
+						return values.get(index);
+					}
+				});
+			}
+		});
+		
+		JPanel panel_1 = new JPanel();
+		getContentPane().add(panel_1, BorderLayout.SOUTH);
+		
+		
+		
+		getContentPane().add(list, BorderLayout.SOUTH);
 
 		
 		

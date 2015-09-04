@@ -1,8 +1,11 @@
 package org.htmldr.net;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
-
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -13,42 +16,51 @@ import java.net.URLConnection;
  */
 
 /**
- *
+ * Class for getting a web page source code
  * @author Fabien LH
- */
-
-/**
- * Abstract class which implements the static method getSource()
- * @author Fabien LH
- * @version 0.1
+ * @version 0.2
  *
  */
-public abstract class WebSourceRetriever {
+public class WebSourceRetriever {
+	private String documentUrl = "";
+	
 	
 	/**
-	 * Method which download a web page source code with its URL.
-	 * @param urlPath
+	 * Class' constructor
+	 * @param url 
 	 * 		The URL of the web page to retrieve.
+	 */
+	public WebSourceRetriever(String url) {
+		this.documentUrl = url;
+	}
+	
+	/**
+	 * Method to get source code as a String.
 	 * @return The web page source code as a String
 	 * @throws IOException Raised if an I/O error occurs when using the InputStream
 	 */
-	public static String getSource(String urlPath) throws IOException {
-		final int bufferLength = 32;
+	public String getSourceAsString() throws IOException {
 		
-        InputStream input = null;
-        URLConnection connection = new URL(urlPath).openConnection();
+        InputStream input = new URL(documentUrl).openStream();
+        BufferedReader buffReader = new BufferedReader(new InputStreamReader(input));
 
-        input = connection.getInputStream();
-        byte[] buffer = new byte[bufferLength];
-        int read;
-        
-        String result = "";
-   
-        while ((read = input.read(buffer)) > 0) {
-        	result += new String(buffer);
+        String result = "", s = "";
+        while ((s = buffReader.readLine()) != null) {
+        	result += s + "\n";
         }
-        
+
         return result;
 	}
 	
+	/**
+	 * Method to get source code as an InputStream.
+	 * @return The web page source code as a InputStream
+	 * @throws IOException Raised if an I/O error occurs when using the InputStream
+	 */
+	public InputStream getSourceAsStream() throws IOException {
+		
+		InputStream input = new URL(documentUrl).openStream();
+	    return input;
+
+	}
 }
